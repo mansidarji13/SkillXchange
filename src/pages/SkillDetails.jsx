@@ -1,4 +1,5 @@
 import { Link, useParams } from "react-router-dom";
+import { useState } from "react";
 import {
   ArrowLeft,
   Star,
@@ -9,6 +10,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 
+import ExchangeRequestModal from "../components/dashboard/ExchangeRequestModal";
 const skills = {
   1: {
     title: "Python Programming",
@@ -141,6 +143,9 @@ function SkillDetails() {
   const { id } = useParams();
 
   const skill = skills[id] || skills[1];
+
+  const [isRequestModalOpen, setIsRequestModalOpen] =
+    useState(false);
 
   return (
     <div className="min-h-screen bg-[#f8f7fc] text-slate-900">
@@ -323,13 +328,14 @@ function SkillDetails() {
             </div>
 
             {/* Request button */}
-            <button
-              type="button"
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5"
-            >
-              <MessageCircle size={19} />
-              Request Skill Exchange
-            </button>
+           <button
+  type="button"
+  onClick={() => setIsRequestModalOpen(true)}
+  className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-6 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5"
+>
+  <MessageCircle size={19} />
+  Request Skill Exchange
+</button>
 
             <p className="mt-4 text-center text-xs leading-5 text-slate-400">
               Send a request and explain what you'd like to learn
@@ -386,6 +392,11 @@ function SkillDetails() {
           </div>
         </section>
       </main>
+      <ExchangeRequestModal
+        skill={skill}
+        isOpen={isRequestModalOpen}
+        onClose={() => setIsRequestModalOpen(false)}
+      />
     </div>
   );
 }
