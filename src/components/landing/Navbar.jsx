@@ -53,13 +53,19 @@ function Navbar() {
 
           {/* Desktop Buttons */}
           <div className="hidden items-center gap-3 md:flex">
-            <button className="rounded-lg border border-violet-400/40 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-violet-400 hover:bg-white/5">
-              Login
-            </button>
+            <a
+  href="/login"
+  className="rounded-lg border border-violet-400/40 px-5 py-2.5 text-sm font-semibold text-white transition hover:border-violet-400 hover:bg-white/5"
+>
+  Login
+</a>
 
-            <button className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:scale-[1.02]">
-              Sign Up
-            </button>
+<a
+  href="/signup"
+  className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:scale-[1.02]"
+>
+  Sign Up
+</a>
           </div>
 
           {/* Mobile Button */}
@@ -110,13 +116,19 @@ function Navbar() {
               </a>
 
               <div className="mt-2 flex gap-3 border-t border-white/10 pt-4">
-                <button className="flex-1 rounded-lg border border-violet-400/40 px-4 py-2.5 text-sm font-semibold text-white">
-                  Login
-                </button>
+                <a
+  href="/login"
+  className="flex-1 rounded-lg border border-violet-400/40 px-4 py-2.5 text-center text-sm font-semibold text-white"
+>
+  Login
+</a>
 
-                <button className="flex-1 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2.5 text-sm font-semibold text-white">
-                  Sign Up
-                </button>
+<a
+  href="/signup"
+  className="flex-1 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2.5 text-center text-sm font-semibold text-white"
+>
+  Sign Up
+</a>
               </div>
 
             </div>
