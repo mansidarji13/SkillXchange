@@ -6,6 +6,8 @@ import Signup from "./pages/Signup";
 import Dashboard from "./pages/Dashboard";
 import BrowseSkills from "./pages/BrowseSkills";
 import SkillDetails from "./pages/SkillDetails";
+import Requests from "./pages/Requests";
+import Matches from "./pages/Matches";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/browse-skills" element={<BrowseSkills />} />
         <Route path="/skill/:id" element={<SkillDetails />} />
+        <Route path="/requests" element={<Requests />} />
+        <Route path="/matches" element={<Matches />} />
       </Routes>
     </BrowserRouter>
   );

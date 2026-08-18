@@ -138,7 +138,7 @@ const skills = {
     wantsToLearn: "UI/UX Design",
   },
 };
-
+import StudentNavbar from "../components/StudentNavbar";
 function SkillDetails() {
   const { id } = useParams();
 
@@ -149,6 +149,7 @@ function SkillDetails() {
 
   return (
     <div className="min-h-screen bg-[#f8f7fc] text-slate-900">
+      <StudentNavbar />
       {/* Header */}
       <header className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-5 py-5 sm:px-8 lg:px-10">

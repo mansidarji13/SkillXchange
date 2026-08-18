@@ -6,75 +6,13 @@ import {
   Search,
   ArrowRight,
 } from "lucide-react";
+import { Link } from "react-router-dom";
+import StudentNavbar from "../components/StudentNavbar";
 
 function Dashboard() {
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f8f7fc] text-slate-900">
-
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10">
-
-          {/* Logo */}
-          <a href="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-lg font-black text-white">
-              X
-            </div>
-
-            <span className="text-lg font-bold tracking-tight">
-              Skill<span className="text-violet-600">X</span>change
-            </span>
-          </a>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-7 md:flex">
-            <a
-              href="/dashboard"
-              className="text-sm font-semibold text-violet-600"
-            >
-              Dashboard
-            </a>
-
-            <a
-  href="/browse-skills"
-  className="text-sm font-medium text-slate-500 transition hover:text-violet-600"
->
-  Browse Skills
-</a>
-
-            <a
-              href="/matches"
-              className="text-sm font-medium text-slate-500 transition hover:text-violet-600"
-            >
-              Matches
-            </a>
-
-            <a
-              href="/requests"
-              className="text-sm font-medium text-slate-500 transition hover:text-violet-600"
-            >
-              Requests
-            </a>
-          </nav>
-
-          {/* Profile */}
-          <button className="flex items-center gap-3 rounded-xl p-1.5 transition hover:bg-slate-100">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-bold text-white">
-              M
-            </div>
-
-            <div className="hidden text-left sm:block">
-              <p className="text-sm font-semibold text-slate-800">
-                Mansi
-              </p>
-
-              <p className="text-xs text-slate-400">
-                Learner
-              </p>
-            </div>
-          </button>
-        </div>
-      </header>
+      <StudentNavbar />
 
       {/* Main Content */}
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-10">
@@ -183,10 +121,13 @@ function Dashboard() {
                 </span>
               </div>
 
-              <button className="flex items-center justify-center gap-2 rounded-xl bg-[#0d0920] px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-900">
+              <Link
+                to="/browse-skills"
+                className="flex items-center justify-center gap-2 rounded-xl bg-[#0d0920] px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-900"
+              >
                 Browse
                 <ArrowRight size={17} />
-              </button>
+              </Link>
             </div>
           </div>
 
@@ -266,9 +207,12 @@ function Dashboard() {
               </p>
             </div>
 
-            <button className="self-start text-sm font-semibold text-violet-600 hover:text-violet-700 sm:self-auto">
+            <Link
+              to="/matches"
+              className="self-start text-sm font-semibold text-violet-600 hover:text-violet-700 sm:self-auto"
+            >
               View All →
-            </button>
+            </Link>
           </div>
 
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -302,9 +246,12 @@ function Dashboard() {
                 </span>
               </div>
 
-              <button className="mt-5 w-full rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white">
+              <Link
+                to="/skill/1"
+                className="mt-5 flex w-full items-center justify-center rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white"
+              >
                 Connect
-              </button>
+              </Link>
             </div>
 
             {/* Match 2 */}
@@ -336,9 +283,12 @@ function Dashboard() {
                 </span>
               </div>
 
-              <button className="mt-5 w-full rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white">
+              <Link
+                to="/skill/2"
+                className="mt-5 flex w-full items-center justify-center rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white"
+              >
                 Connect
-              </button>
+              </Link>
             </div>
 
             {/* Match 3 */}
@@ -370,9 +320,12 @@ function Dashboard() {
                 </span>
               </div>
 
-              <button className="mt-5 w-full rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white">
+              <Link
+                to="/skill/3"
+                className="mt-5 flex w-full items-center justify-center rounded-xl bg-violet-50 py-3 text-sm font-semibold text-violet-700 transition hover:bg-violet-600 hover:text-white"
+              >
                 Connect
-              </button>
+              </Link>
             </div>
 
           </div>

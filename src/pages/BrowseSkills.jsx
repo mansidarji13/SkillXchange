@@ -110,7 +110,7 @@ const categories = [
   "Creative",
   "Communication",
 ];
-
+import StudentNavbar from "../components/StudentNavbar";
 function BrowseSkills() {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
@@ -136,6 +136,7 @@ function BrowseSkills() {
 
   return (
     <div className="min-h-screen bg-[#f8f7fc]">
+      <StudentNavbar />
       {/* Header */}
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-10 lg:py-10">
