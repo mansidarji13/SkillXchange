@@ -8,6 +8,7 @@ import BrowseSkills from "./pages/BrowseSkills";
 import SkillDetails from "./pages/SkillDetails";
 import Requests from "./pages/Requests";
 import Matches from "./pages/Matches";
+import Profile from "./pages/Profile";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/skill/:id" element={<SkillDetails />} />
         <Route path="/requests" element={<Requests />} />
         <Route path="/matches" element={<Matches />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

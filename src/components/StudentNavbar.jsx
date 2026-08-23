@@ -58,8 +58,9 @@ function StudentNavbar() {
         <div className="flex items-center gap-3">
           
           {/* Profile */}
-          <button
-            type="button"
+          <Link
+            to="/profile"
+            onClick={closeMenu}
             className="hidden items-center gap-3 rounded-xl px-2 py-1.5 transition hover:bg-slate-50 sm:flex"
           >
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-base font-bold text-white">
@@ -75,8 +76,7 @@ function StudentNavbar() {
                 Learner
               </p>
             </div>
-          </button>
-
+          </Link>
           {/* Mobile Menu Button */}
           <button
             type="button"
@@ -112,7 +112,11 @@ function StudentNavbar() {
           </nav>
 
           {/* Mobile Profile */}
-          <div className="mt-3 flex items-center gap-3 border-t border-slate-100 px-4 pt-4">
+          <Link
+            to="/profile"
+            onClick={closeMenu}
+            className="mt-3 flex items-center gap-3 border-t border-slate-100 px-4 pt-4"
+          >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-bold text-white">
               M
             </div>
@@ -126,7 +130,7 @@ function StudentNavbar() {
                 Learner
               </p>
             </div>
-          </div>
+          </Link>
         </div>
       )}
     </header>
