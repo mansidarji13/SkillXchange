@@ -22,3 +22,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Flask backend
+backend/venv/
+backend/.env
+
+# Python virtual environments
+venv/
+.env
+
+# SQLite database
+*.sqlite3
