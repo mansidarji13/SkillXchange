@@ -6,10 +6,28 @@ import {
   Search,
   ArrowRight,
 } from "lucide-react";
+
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
 import StudentNavbar from "../components/StudentNavbar";
 
 function Dashboard() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch (error) {
+        console.error("Unable to read user data:", error);
+      }
+    }
+  }, []);
+
+  const userName = user?.full_name || "User";
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f8f7fc] text-slate-900">
       <StudentNavbar />
@@ -24,7 +42,7 @@ function Dashboard() {
           </p>
 
           <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl">
-            Good morning, Mansi 👋
+            Good morning, {userName} 👋
           </h1>
 
           <p className="mt-2 text-sm text-slate-500 sm:text-base">

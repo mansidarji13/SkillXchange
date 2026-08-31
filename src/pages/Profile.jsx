@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   User,
   MapPin,
@@ -19,27 +19,118 @@ import StudentNavbar from "../components/StudentNavbar";
 
 function Profile() {
   const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   const [profile, setProfile] = useState({
-    name: "Mansi",
+    id: null,
+    name: "",
     role: "Learner",
-    location: "Ahmedabad, India",
-    email: "mansi@example.com",
-    bio: "Curious learner who enjoys discovering new skills, sharing knowledge, and connecting with people through meaningful learning experiences.",
-    teaches: ["Python", "Django", "React"],
-    wantsToLearn: ["UI/UX Design", "Figma", "Graphic Design"],
+    location: "",
+    email: "",
+    bio: "",
+    teaches: [],
+    wantsToLearn: [],
+    profileImage: "",
     availability: "Weekends",
     learningMode: "Online",
   });
 
+  const [originalProfile, setOriginalProfile] = useState(null);
+
   const [newTeachSkill, setNewTeachSkill] = useState("");
   const [newLearnSkill, setNewLearnSkill] = useState("");
+
+  // Load logged-in user's profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("access_token");
+
+      if (!token) {
+        window.location.href = "/login";
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError("");
+
+        const response = await fetch(
+          "http://127.0.0.1:5000/api/profile/me/",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem("access_token");
+            localStorage.removeItem("user");
+            window.location.href = "/login";
+            return;
+          }
+
+          throw new Error(data.message || "Unable to load profile.");
+        }
+
+        const backendProfile = data.profile;
+
+        const loadedProfile = {
+          id: backendProfile.id,
+          name: backendProfile.full_name || "",
+          role: backendProfile.role || "Learner",
+          location: backendProfile.location || "",
+          email: backendProfile.email || "",
+          bio: backendProfile.bio || "",
+          teaches: backendProfile.skills_to_teach
+            ? backendProfile.skills_to_teach
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean)
+            : [],
+          wantsToLearn: backendProfile.skills_to_learn
+            ? backendProfile.skills_to_learn
+                .split(",")
+                .map((skill) => skill.trim())
+                .filter(Boolean)
+            : [],
+          profileImage: backendProfile.profile_image || "",
+          availability: backendProfile.availability || "Weekends",
+          learningMode: backendProfile.learning_mode || "Online",
+        };
+
+        setProfile(loadedProfile);
+        setOriginalProfile(loadedProfile);
+
+      } catch (error) {
+        console.error("Profile loading error:", error);
+        setError(
+          error.message || "Unable to load your profile."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleChange = (field, value) => {
     setProfile((prev) => ({
       ...prev,
       [field]: value,
     }));
+
+    setSuccess("");
+    setError("");
   };
 
   const addTeachSkill = () => {
@@ -82,16 +173,115 @@ function Profile() {
   const removeLearnSkill = (skill) => {
     setProfile((prev) => ({
       ...prev,
-      wantsToLearn: prev.wantsToLearn.filter((item) => item !== skill),
+      wantsToLearn: prev.wantsToLearn.filter(
+        (item) => item !== skill
+      ),
     }));
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
+  // Save profile to backend
+  const handleSave = async () => {
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      window.location.href = "/login";
+      return;
+    }
+
+    try {
+      setSaving(true);
+      setError("");
+      setSuccess("");
+
+      const response = await fetch(
+        "http://127.0.0.1:5000/api/profile/me/",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            full_name: profile.name,
+            email: profile.email,
+            role: profile.role,
+            bio: profile.bio,
+            location: profile.location,
+            
+            availability: profile.availability,
+            learning_mode: profile.learningMode,
+
+            skills_to_teach: profile.teaches.join(", "),
+            skills_to_learn: profile.wantsToLearn.join(", "),
+            profile_image: profile.profileImage,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 401) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("user");
+          window.location.href = "/login";
+          return;
+        }
+
+        throw new Error(
+          data.message || "Unable to save profile."
+        );
+      }
+
+      const updatedProfile = data.profile;
+
+      const updatedFrontendProfile = {
+        id: updatedProfile.id,
+        name: updatedProfile.full_name || "",
+        role: updatedProfile.role || "Learner",
+        location: updatedProfile.location || "",
+        email: updatedProfile.email || "",
+        bio: updatedProfile.bio || "",
+        teaches: updatedProfile.skills_to_teach
+          ? updatedProfile.skills_to_teach
+              .split(",")
+              .map((skill) => skill.trim())
+              .filter(Boolean)
+          : [],
+        wantsToLearn: updatedProfile.skills_to_learn
+          ? updatedProfile.skills_to_learn
+              .split(",")
+              .map((skill) => skill.trim())
+              .filter(Boolean)
+          : [],
+        profileImage: updatedProfile.profile_image || "",
+        availability: updatedProfile.availability || "Weekends",
+        learningMode: updatedProfile.learning_mode || "Online",
+      };
+
+      setProfile(updatedFrontendProfile);
+      setOriginalProfile(updatedFrontendProfile);
+      setIsEditing(false);
+      setSuccess("Profile updated successfully.");
+
+    } catch (error) {
+      console.error("Profile save error:", error);
+      setError(
+        error.message || "Unable to save your profile."
+      );
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleCancel = () => {
+    if (originalProfile) {
+      setProfile(originalProfile);
+    }
+
     setIsEditing(false);
+    setError("");
+    setSuccess("");
   };
 
   return (
@@ -142,10 +332,11 @@ function Profile() {
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-700"
+                  disabled={saving}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Save size={17} />
-                  Save Changes
+                  {saving ? "Saving..." : "Save Changes"}
                 </button>
               </div>
             )}

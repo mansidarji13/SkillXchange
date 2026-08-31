@@ -11,6 +11,9 @@ function Signup() {
     confirmPassword: "",
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -18,18 +21,53 @@ function Signup() {
       ...previous,
       [name]: value,
     }));
+
+    setError("");
   };
 
- const handleSubmit = (event) => {
-  event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  if (formData.password !== formData.confirmPassword) {
-    alert("Passwords do not match.");
-    return;
-  }
+    // Check password confirmation
+    if (!formData.confirmPassword) {
+      alert("Please enter your confirm password.");
+      return;
+    }
 
-  window.location.href = "/dashboard";
-};
+    if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/auth/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          confirm_password: formData.confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(data.message || "Registration failed.");
+        return;
+      }
+
+      alert("Account created successfully!");
+
+      window.location.href = "/login";
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert("Unable to connect to the server.");
+    }
+  };
 
   return (
     <AuthLayout
@@ -72,6 +110,13 @@ function Signup() {
           onChange={handleChange}
         />
 
+        {/* Error Message */}
+        {error && (
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         {/* Terms */}
         <label className="flex cursor-pointer items-start gap-3 text-xs leading-5 text-slate-400">
           <input
@@ -102,14 +147,17 @@ function Signup() {
         {/* Signup */}
         <button
           type="submit"
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:shadow-violet-600/30"
+          disabled={loading}
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:shadow-violet-600/30 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Create Account
+          {loading ? "Creating Account..." : "Create Account"}
 
-          <ArrowRight
-            size={18}
-            className="transition-transform group-hover:translate-x-1"
-          />
+          {!loading && (
+            <ArrowRight
+              size={18}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          )}
         </button>
 
         {/* Divider */}
@@ -130,7 +178,7 @@ function Signup() {
         >
           <span className="text-base font-bold">GH</span>
 
-            Continue with GitHub
+          Continue with GitHub
         </button>
 
         {/* Login */}

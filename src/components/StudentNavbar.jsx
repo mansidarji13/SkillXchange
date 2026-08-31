@@ -1,9 +1,28 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Menu, X } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Menu, X, LogOut } from "lucide-react";
 
 function StudentNavbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navigate = useNavigate();
+
+  // Get logged-in user from localStorage
+  const storedUser = localStorage.getItem("user");
+
+  let user = null;
+
+  try {
+    user = storedUser ? JSON.parse(storedUser) : null;
+  } catch (error) {
+    console.error("Unable to read logged-in user:", error);
+  }
+
+  const userName = user?.full_name || "User";
+  const userRole = user?.role || "Learner";
+
+  // Get first letter for avatar
+  const avatarLetter = userName.charAt(0).toUpperCase();
 
   const navItems = [
     { label: "Dashboard", path: "/dashboard" },
@@ -16,10 +35,22 @@ function StudentNavbar() {
     setMenuOpen(false);
   };
 
+  const handleLogout = () => {
+    // Remove authentication data
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+
+    // Close mobile menu
+    setMenuOpen(false);
+
+    // Go back to login
+    navigate("/login");
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md">
       <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-        
+
         {/* Logo */}
         <Link
           to="/dashboard"
@@ -54,9 +85,9 @@ function StudentNavbar() {
           ))}
         </nav>
 
-        {/* Profile + Mobile Menu */}
+        {/* Profile + Logout + Mobile Menu */}
         <div className="flex items-center gap-3">
-          
+
           {/* Profile */}
           <Link
             to="/profile"
@@ -64,19 +95,30 @@ function StudentNavbar() {
             className="hidden items-center gap-3 rounded-xl px-2 py-1.5 transition hover:bg-slate-50 sm:flex"
           >
             <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-base font-bold text-white">
-              M
+              {avatarLetter}
             </div>
 
             <div className="hidden text-left md:block">
               <p className="text-sm font-semibold text-slate-800">
-                Mansi
+                {userName}
               </p>
 
               <p className="text-xs text-slate-400">
-                Learner
+                {userRole}
               </p>
             </div>
           </Link>
+
+          {/* Logout */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="hidden items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold text-slate-500 transition hover:bg-red-50 hover:text-red-600 md:flex"
+          >
+            <LogOut size={17} />
+            Logout
+          </button>
+
           {/* Mobile Menu Button */}
           <button
             type="button"
@@ -92,6 +134,7 @@ function StudentNavbar() {
       {/* Mobile Navigation */}
       {menuOpen && (
         <div className="border-t border-slate-200 bg-white px-5 py-4 shadow-lg lg:hidden">
+
           <nav className="flex flex-col gap-1">
             {navItems.map((item) => (
               <NavLink
@@ -118,19 +161,29 @@ function StudentNavbar() {
             className="mt-3 flex items-center gap-3 border-t border-slate-100 px-4 pt-4"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 text-sm font-bold text-white">
-              M
+              {avatarLetter}
             </div>
 
             <div>
               <p className="text-sm font-semibold text-slate-800">
-                Mansi
+                {userName}
               </p>
 
               <p className="text-xs text-slate-400">
-                Learner
+                {userRole}
               </p>
             </div>
           </Link>
+
+          {/* Mobile Logout */}
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="mt-3 flex w-full items-center gap-3 rounded-xl border-t border-slate-100 px-4 pt-4 text-sm font-semibold text-red-500"
+          >
+            <LogOut size={18} />
+            Logout
+          </button>
         </div>
       )}
     </header>

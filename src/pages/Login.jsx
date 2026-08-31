@@ -9,6 +9,9 @@ function Login() {
     password: "",
   });
 
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -16,13 +19,62 @@ function Login() {
       ...previous,
       [name]: value,
     }));
+
+    // Clear error when user starts typing again
+    if (error) {
+      setError("");
+    }
   };
 
- const handleSubmit = (event) => {
-  event.preventDefault();
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
-  window.location.href = "/dashboard";
-};
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:5000/api/auth/login/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Invalid email or password.");
+        return;
+      }
+
+      // Store JWT token
+      localStorage.setItem("access_token", data.access_token);
+
+      // Store logged-in user information
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+      // Redirect to dashboard
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.error("Login error:", error);
+
+      setError(
+        "Unable to connect to the server. Please make sure the Flask backend is running."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <AuthLayout
@@ -68,6 +120,13 @@ function Login() {
           />
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+            {error}
+          </div>
+        )}
+
         {/* Remember me */}
         <label className="flex cursor-pointer items-center gap-3 text-sm text-slate-400">
           <input
@@ -81,14 +140,17 @@ function Login() {
         {/* Login */}
         <button
           type="submit"
-          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:shadow-violet-600/30"
+          disabled={loading}
+          className="group flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-5 py-3.5 font-semibold text-white shadow-lg shadow-violet-600/20 transition hover:-translate-y-0.5 hover:shadow-violet-600/30 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
 
-          <ArrowRight
-            size={18}
-            className="transition-transform group-hover:translate-x-1"
-          />
+          {!loading && (
+            <ArrowRight
+              size={18}
+              className="transition-transform group-hover:translate-x-1"
+            />
+          )}
         </button>
 
         {/* Divider */}
@@ -104,13 +166,13 @@ function Login() {
 
         {/* GitHub */}
         <button
-  type="button"
-  className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
->
-  <span className="text-base font-bold">GH</span>
+          type="button"
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
+        >
+          <span className="text-base font-bold">GH</span>
 
-  Continue with GitHub
-</button>
+          Continue with GitHub
+        </button>
 
         {/* Signup */}
         <p className="pt-2 text-center text-sm text-slate-400">
